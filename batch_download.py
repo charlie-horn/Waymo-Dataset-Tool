@@ -25,7 +25,7 @@ if not os.path.exists('labels'):
 
 clip_id = len(glob.glob('labels/*.txt'))
 for seg_id in range(0, num_segs):
-    if not os.path.exists('%s/%s_%04d.tar'(args.out_dir, args.split, seg_id)):
+    if not os.path.exists(args.out_dir + "/" + args.split  + '%04d.tar'(seg_id)):
         flag = os.system('gsutil cp ' + url_template % seg_id + ' ' + args.out_dir)
         assert flag == 0, 'Failed to download segment %d. Make sure gsutil is installed'%seg_id
     tfrecords = sorted(glob.glob('%s/*.tfrecord'%args.out_dir))
