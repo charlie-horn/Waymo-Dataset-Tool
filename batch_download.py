@@ -30,5 +30,6 @@ for seg_id in range(0, num_segs):
         print("Clip %d done"%clip_id)
         clip_id += 1
         os.remove(record)
+    break
 
     print("Segment %d done"%seg_id)
