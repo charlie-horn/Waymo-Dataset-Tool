@@ -21,10 +21,13 @@ if not os.path.exists(args.out_dir):
 
 clip_id = len(glob.glob('labels/*.txt'))
 for seg_id in range(0, num_segs):
-    flag = os.system('gsutil cp ' + url_template % seg_id + ' ' + args.out_dir)
-    assert flag == 0, 'Failed to download segment %d. Make sure gsutil is installed'%seg_id
-    os.system('cd %s; tar xf %s_%04d.tar'%(args.out_dir, args.split, seg_id))
+    if not os.path.exists('%s/%s_%04d.tar'(args.out_dir, args.split, seg_id)):
+        flag = os.system('gsutil cp ' + url_template % seg_id + ' ' + args.out_dir)
+        assert flag == 0, 'Failed to download segment %d. Make sure gsutil is installed'%seg_id
     tfrecords = sorted(glob.glob('%s/*.tfrecord'%args.out_dir))
+    if len(tfrecords) == 0:
+        os.system('cd %s; tar xf %s_%04d.tar'%(args.out_dir, args.split, seg_id))
+        tfrecords = sorted(glob.glob('%s/*.tfrecord'%args.out_dir))
     for record in tfrecords:
         extract_frame(record, 'labels/%05d.txt'%clip_id, '%05d'%clip_id, WAYMO_CLASSES, resize_ratio=args.resize)
         print("Clip %d done"%clip_id)
